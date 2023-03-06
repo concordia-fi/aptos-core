@@ -15,12 +15,24 @@ the Move stdlib, the Aptos stdlib, and the Aptos framework.
 -  [Function `sha_512_and_ripemd_160_enabled`](#0x1_features_sha_512_and_ripemd_160_enabled)
 -  [Function `get_aptos_stdlib_chain_id_feature`](#0x1_features_get_aptos_stdlib_chain_id_feature)
 -  [Function `aptos_stdlib_chain_id_enabled`](#0x1_features_aptos_stdlib_chain_id_enabled)
+-  [Function `get_vm_binary_format_v6`](#0x1_features_get_vm_binary_format_v6)
+-  [Function `allow_vm_binary_format_v6`](#0x1_features_allow_vm_binary_format_v6)
+-  [Function `get_collect_and_distribute_gas_fees_feature`](#0x1_features_get_collect_and_distribute_gas_fees_feature)
+-  [Function `collect_and_distribute_gas_fees`](#0x1_features_collect_and_distribute_gas_fees)
+-  [Function `multi_ed25519_pk_validate_v2_feature`](#0x1_features_multi_ed25519_pk_validate_v2_feature)
+-  [Function `multi_ed25519_pk_validate_v2_enabled`](#0x1_features_multi_ed25519_pk_validate_v2_enabled)
+-  [Function `get_blake2b_256_feature`](#0x1_features_get_blake2b_256_feature)
+-  [Function `blake2b_256_enabled`](#0x1_features_blake2b_256_enabled)
+-  [Function `get_resource_groups_feature`](#0x1_features_get_resource_groups_feature)
+-  [Function `resource_groups_enabled`](#0x1_features_resource_groups_enabled)
+-  [Function `get_multisig_accounts_feature`](#0x1_features_get_multisig_accounts_feature)
+-  [Function `multisig_accounts_enabled`](#0x1_features_multisig_accounts_enabled)
 -  [Function `change_feature_flags`](#0x1_features_change_feature_flags)
 -  [Function `is_enabled`](#0x1_features_is_enabled)
 -  [Function `set`](#0x1_features_set)
 -  [Function `contains`](#0x1_features_contains)
 -  [Specification](#@Specification_1)
-    -  [Function `code_dependency_check_enabled`](#@Specification_1_code_dependency_check_enabled)
+    -  [Resource `Features`](#@Specification_1_Features)
     -  [Function `change_feature_flags`](#@Specification_1_change_feature_flags)
     -  [Function `is_enabled`](#@Specification_1_is_enabled)
     -  [Function `set`](#@Specification_1_set)
@@ -78,6 +90,18 @@ Lifetime: transient
 
 
 
+<a name="0x1_features_BLAKE2B_256_NATIVE"></a>
+
+Whether the new BLAKE2B-256 hash function native is enabled.
+This is needed because of the introduction of new native function(s).
+Lifetime: transient
+
+
+<pre><code><b>const</b> <a href="features.md#0x1_features_BLAKE2B_256_NATIVE">BLAKE2B_256_NATIVE</a>: u64 = 8;
+</code></pre>
+
+
+
 <a name="0x1_features_CODE_DEPENDENCY_CHECK"></a>
 
 Whether validation of package dependencies is enabled, and the related native function is
@@ -90,12 +114,56 @@ Lifetime: transient
 
 
 
+<a name="0x1_features_COLLECT_AND_DISTRIBUTE_GAS_FEES"></a>
+
+Whether gas fees are collected and distributed to the block proposers.
+Lifetime: transient
+
+
+<pre><code><b>const</b> <a href="features.md#0x1_features_COLLECT_AND_DISTRIBUTE_GAS_FEES">COLLECT_AND_DISTRIBUTE_GAS_FEES</a>: u64 = 6;
+</code></pre>
+
+
+
 <a name="0x1_features_EFRAMEWORK_SIGNER_NEEDED"></a>
 
 The provided signer has not a framework address.
 
 
 <pre><code><b>const</b> <a href="features.md#0x1_features_EFRAMEWORK_SIGNER_NEEDED">EFRAMEWORK_SIGNER_NEEDED</a>: u64 = 1;
+</code></pre>
+
+
+
+<a name="0x1_features_MULTISIG_ACCOUNTS"></a>
+
+Whether multisig accounts (different from accounts with multi-ed25519 auth keys) are enabled.
+
+
+<pre><code><b>const</b> <a href="features.md#0x1_features_MULTISIG_ACCOUNTS">MULTISIG_ACCOUNTS</a>: u64 = 10;
+</code></pre>
+
+
+
+<a name="0x1_features_MULTI_ED25519_PK_VALIDATE_V2_NATIVES"></a>
+
+Whether the new <code>aptos_stdlib::multi_ed25519::public_key_validate_internal_v2()</code> native is enabled.
+This is needed because of the introduction of a new native function.
+Lifetime: transient
+
+
+<pre><code><b>const</b> <a href="features.md#0x1_features_MULTI_ED25519_PK_VALIDATE_V2_NATIVES">MULTI_ED25519_PK_VALIDATE_V2_NATIVES</a>: u64 = 7;
+</code></pre>
+
+
+
+<a name="0x1_features_RESOURCE_GROUPS"></a>
+
+Whether resource groups are enabled.
+This is needed because of new attributes for structs and a change in storage representation.
+
+
+<pre><code><b>const</b> <a href="features.md#0x1_features_RESOURCE_GROUPS">RESOURCE_GROUPS</a>: u64 = 9;
 </code></pre>
 
 
@@ -120,6 +188,17 @@ Lifetime: ephemeral
 
 
 <pre><code><b>const</b> <a href="features.md#0x1_features_TREAT_FRIEND_AS_PRIVATE">TREAT_FRIEND_AS_PRIVATE</a>: u64 = 2;
+</code></pre>
+
+
+
+<a name="0x1_features_VM_BINARY_FORMAT_V6"></a>
+
+Whether to allow the use of binary format version v6.
+Lifetime: transient
+
+
+<pre><code><b>const</b> <a href="features.md#0x1_features_VM_BINARY_FORMAT_V6">VM_BINARY_FORMAT_V6</a>: u64 = 5;
 </code></pre>
 
 
@@ -264,6 +343,282 @@ Lifetime: ephemeral
 
 </details>
 
+<a name="0x1_features_get_vm_binary_format_v6"></a>
+
+## Function `get_vm_binary_format_v6`
+
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_vm_binary_format_v6">get_vm_binary_format_v6</a>(): u64
+</code></pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_vm_binary_format_v6">get_vm_binary_format_v6</a>(): u64 { <a href="features.md#0x1_features_VM_BINARY_FORMAT_V6">VM_BINARY_FORMAT_V6</a> }
+</code></pre>
+
+
+
+</details>
+
+<a name="0x1_features_allow_vm_binary_format_v6"></a>
+
+## Function `allow_vm_binary_format_v6`
+
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_allow_vm_binary_format_v6">allow_vm_binary_format_v6</a>(): bool
+</code></pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_allow_vm_binary_format_v6">allow_vm_binary_format_v6</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
+    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_VM_BINARY_FORMAT_V6">VM_BINARY_FORMAT_V6</a>)
+}
+</code></pre>
+
+
+
+</details>
+
+<a name="0x1_features_get_collect_and_distribute_gas_fees_feature"></a>
+
+## Function `get_collect_and_distribute_gas_fees_feature`
+
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_collect_and_distribute_gas_fees_feature">get_collect_and_distribute_gas_fees_feature</a>(): u64
+</code></pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_collect_and_distribute_gas_fees_feature">get_collect_and_distribute_gas_fees_feature</a>(): u64 { <a href="features.md#0x1_features_COLLECT_AND_DISTRIBUTE_GAS_FEES">COLLECT_AND_DISTRIBUTE_GAS_FEES</a> }
+</code></pre>
+
+
+
+</details>
+
+<a name="0x1_features_collect_and_distribute_gas_fees"></a>
+
+## Function `collect_and_distribute_gas_fees`
+
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_collect_and_distribute_gas_fees">collect_and_distribute_gas_fees</a>(): bool
+</code></pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_collect_and_distribute_gas_fees">collect_and_distribute_gas_fees</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
+    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_COLLECT_AND_DISTRIBUTE_GAS_FEES">COLLECT_AND_DISTRIBUTE_GAS_FEES</a>)
+}
+</code></pre>
+
+
+
+</details>
+
+<a name="0x1_features_multi_ed25519_pk_validate_v2_feature"></a>
+
+## Function `multi_ed25519_pk_validate_v2_feature`
+
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_multi_ed25519_pk_validate_v2_feature">multi_ed25519_pk_validate_v2_feature</a>(): u64
+</code></pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_multi_ed25519_pk_validate_v2_feature">multi_ed25519_pk_validate_v2_feature</a>(): u64 { <a href="features.md#0x1_features_MULTI_ED25519_PK_VALIDATE_V2_NATIVES">MULTI_ED25519_PK_VALIDATE_V2_NATIVES</a> }
+</code></pre>
+
+
+
+</details>
+
+<a name="0x1_features_multi_ed25519_pk_validate_v2_enabled"></a>
+
+## Function `multi_ed25519_pk_validate_v2_enabled`
+
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_multi_ed25519_pk_validate_v2_enabled">multi_ed25519_pk_validate_v2_enabled</a>(): bool
+</code></pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_multi_ed25519_pk_validate_v2_enabled">multi_ed25519_pk_validate_v2_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
+    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_MULTI_ED25519_PK_VALIDATE_V2_NATIVES">MULTI_ED25519_PK_VALIDATE_V2_NATIVES</a>)
+}
+</code></pre>
+
+
+
+</details>
+
+<a name="0x1_features_get_blake2b_256_feature"></a>
+
+## Function `get_blake2b_256_feature`
+
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_blake2b_256_feature">get_blake2b_256_feature</a>(): u64
+</code></pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_blake2b_256_feature">get_blake2b_256_feature</a>(): u64 { <a href="features.md#0x1_features_BLAKE2B_256_NATIVE">BLAKE2B_256_NATIVE</a> }
+</code></pre>
+
+
+
+</details>
+
+<a name="0x1_features_blake2b_256_enabled"></a>
+
+## Function `blake2b_256_enabled`
+
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_blake2b_256_enabled">blake2b_256_enabled</a>(): bool
+</code></pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_blake2b_256_enabled">blake2b_256_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
+    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_BLAKE2B_256_NATIVE">BLAKE2B_256_NATIVE</a>)
+}
+</code></pre>
+
+
+
+</details>
+
+<a name="0x1_features_get_resource_groups_feature"></a>
+
+## Function `get_resource_groups_feature`
+
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_resource_groups_feature">get_resource_groups_feature</a>(): u64
+</code></pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_resource_groups_feature">get_resource_groups_feature</a>(): u64 { <a href="features.md#0x1_features_RESOURCE_GROUPS">RESOURCE_GROUPS</a> }
+</code></pre>
+
+
+
+</details>
+
+<a name="0x1_features_resource_groups_enabled"></a>
+
+## Function `resource_groups_enabled`
+
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_resource_groups_enabled">resource_groups_enabled</a>(): bool
+</code></pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_resource_groups_enabled">resource_groups_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
+    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_RESOURCE_GROUPS">RESOURCE_GROUPS</a>)
+}
+</code></pre>
+
+
+
+</details>
+
+<a name="0x1_features_get_multisig_accounts_feature"></a>
+
+## Function `get_multisig_accounts_feature`
+
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_multisig_accounts_feature">get_multisig_accounts_feature</a>(): u64
+</code></pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_multisig_accounts_feature">get_multisig_accounts_feature</a>(): u64 { <a href="features.md#0x1_features_MULTISIG_ACCOUNTS">MULTISIG_ACCOUNTS</a> }
+</code></pre>
+
+
+
+</details>
+
+<a name="0x1_features_multisig_accounts_enabled"></a>
+
+## Function `multisig_accounts_enabled`
+
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_multisig_accounts_enabled">multisig_accounts_enabled</a>(): bool
+</code></pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_multisig_accounts_enabled">multisig_accounts_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
+    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_MULTISIG_ACCOUNTS">MULTISIG_ACCOUNTS</a>)
+}
+</code></pre>
+
+
+
+</details>
+
 <a name="0x1_features_change_feature_flags"></a>
 
 ## Function `change_feature_flags`
@@ -398,24 +753,28 @@ Helper to check whether a feature flag is enabled.
 ## Specification
 
 
+<a name="@Specification_1_Features"></a>
 
-<pre><code><b>pragma</b> verify = <b>false</b>;
+### Resource `Features`
+
+
+<pre><code><b>struct</b> <a href="features.md#0x1_features_Features">Features</a> <b>has</b> key
 </code></pre>
 
 
 
-<a name="@Specification_1_code_dependency_check_enabled"></a>
+<dl>
+<dt>
+<code><a href="features.md#0x1_features">features</a>: <a href="vector.md#0x1_vector">vector</a>&lt;u8&gt;</code>
+</dt>
+<dd>
 
-### Function `code_dependency_check_enabled`
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_code_dependency_check_enabled">code_dependency_check_enabled</a>(): bool
-</code></pre>
+</dd>
+</dl>
 
 
 
-
-<pre><code><b>pragma</b> opaque = <b>true</b>;
+<pre><code><b>pragma</b> bv=b"0";
 </code></pre>
 
 
@@ -431,8 +790,9 @@ Helper to check whether a feature flag is enabled.
 
 
 
-<pre><code><b>pragma</b> opaque = <b>true</b>;
+<pre><code><b>pragma</b> opaque;
 <b>modifies</b> <b>global</b>&lt;<a href="features.md#0x1_features_Features">Features</a>&gt;(@std);
+<b>aborts_if</b> <a href="signer.md#0x1_signer_address_of">signer::address_of</a>(framework) != @std;
 </code></pre>
 
 
@@ -475,7 +835,10 @@ Helper to check whether a feature flag is enabled.
 
 
 
-<pre><code><b>pragma</b> opaque;
+<pre><code><b>pragma</b> bv=b"0";
+<b>aborts_if</b> <b>false</b>;
+<b>ensures</b> feature / 8 &lt; len(<a href="features.md#0x1_features">features</a>);
+<b>ensures</b> <b>include</b> == <a href="features.md#0x1_features_spec_contains">spec_contains</a>(<a href="features.md#0x1_features">features</a>, feature);
 </code></pre>
 
 
@@ -491,7 +854,21 @@ Helper to check whether a feature flag is enabled.
 
 
 
-<pre><code><b>pragma</b> opaque;
+<pre><code><b>pragma</b> bv=b"0";
+<b>aborts_if</b> <b>false</b>;
+<b>ensures</b> result == <a href="features.md#0x1_features_spec_contains">spec_contains</a>(<a href="features.md#0x1_features">features</a>, feature);
+</code></pre>
+
+
+
+
+<a name="0x1_features_spec_contains"></a>
+
+
+<pre><code><b>fun</b> <a href="features.md#0x1_features_spec_contains">spec_contains</a>(<a href="features.md#0x1_features">features</a>: <a href="vector.md#0x1_vector">vector</a>&lt;u8&gt;, feature: u64): bool {
+   ((int2bv((((1 <b>as</b> u8) &lt;&lt; ((feature % (8 <b>as</b> u64)) <b>as</b> u64)) <b>as</b> u8)) <b>as</b> u8) & <a href="features.md#0x1_features">features</a>[feature/8] <b>as</b> u8) &gt; (0 <b>as</b> u8)
+       && (feature / 8) &lt; len(<a href="features.md#0x1_features">features</a>)
+}
 </code></pre>
 
 

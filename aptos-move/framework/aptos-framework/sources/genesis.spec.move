@@ -9,12 +9,6 @@ spec aptos_framework::genesis {
     }
 
     spec initialize_for_verification {
-        // TODO: disabled due to the issue of Table.
-        pragma verify = false;
-    }
-
-    spec create_signer {
-        // TODO: temporary mockup.
-        pragma opaque;
+        pragma verify = true;
     }
 }

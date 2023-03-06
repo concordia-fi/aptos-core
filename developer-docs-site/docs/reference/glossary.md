@@ -13,12 +13,12 @@ slug: "glossary"
 
 ### Account
 
-- An **account** in the Aptos blockchain is a container for an arbitrary number of [Move modules](#move-module) and [Move resources](#move-resources). This essentially means that the state of each [account](/concepts/accounts) is comprised of both code and data.
+- An **account** in the Aptos blockchain is a container for an arbitrary number of [Move modules](#move-module) and [Move resources](#move-resources). This essentially means that the state of each [account](../concepts/accounts.md) is comprised of both code and data.
 - The account is identified by an [account address](#account-address).
 
 ### Account Address
 
-- The address of a Aptos account, see [basics on accounts](/concepts/accounts#initial-account-setup).
+- The address of a Aptos account, see [basics on accounts](../concepts/accounts.md#initial-account-setup).
 
 ### AptosBFT
 
@@ -70,7 +70,7 @@ An Aptos node is a peer entity of the Aptos network that tracks the state of the
 ### Byzantine Fault Tolerance (BFT)
 
 - **Byzantine Fault Tolerance** (BFT) is the ability of a distributed system to provide safety and liveness guarantees in the presence of faulty, or “[Byzantine](#byzantine-validator),” validators below a certain threshold.
-- The Aptos blockchain uses AptosBFT, a consensus protocol based on [HotStuff.](#hotstuff)
+- The Aptos blockchain uses AptosBFT, a consensus protocol based on [HotStuff](#hotstuff).
 - BFT algorithms typically operate with a number of entities, collectively holding N votes (which are called “validators” in the Aptos network’s application of the system).
 - N is chosen to withstand some number of validators holding f votes, which might be malicious.
 - In this configuration, N is typically set to 3f+1. Validators holding up to f votes will be allowed to be faulty &mdash; offline, malicious, slow, etc. As long as 2f+1 votes are held by [honest](#honest-validator) validators, they will be able to reach consensus on consistent decisions.
@@ -290,6 +290,12 @@ See [Resource accounts](../guides/resource-accounts.md).
 - **State root hash** is a [Merkle hash](https://en.wikipedia.org/wiki/Merkle_tree) over all keys and values the state of the Aptos blockchain at a given version.
 
 ## T
+
+### Table
+
+- A [**table**](https://github.com/aptos-labs/aptos-core/blob/main/aptos-move/framework/aptos-stdlib/doc/table.md) implements the Table type and in Aptos is used to store information as key-value data within an account at large scale.
+
+See [`table.move`](https://github.com/aptos-labs/aptos-core/blob/main/aptos-move/framework/aptos-stdlib/sources/table.move) for the associated Aptos source file.
 
 ### Transaction
 

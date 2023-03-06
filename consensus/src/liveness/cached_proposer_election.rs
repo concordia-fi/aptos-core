@@ -1,20 +1,19 @@
-// Copyright (c) Aptos
+// Copyright © Aptos Foundation
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::BTreeMap;
-
-use aptos_infallible::Mutex;
-use consensus_types::common::{Author, Round};
-
-use crate::counters::PROPOSER_ELECTION_DURATION;
-
 use super::proposer_election::ProposerElection;
+use crate::counters::PROPOSER_ELECTION_DURATION;
+use aptos_consensus_types::common::{Author, Round};
+use aptos_infallible::Mutex;
+use aptos_logger::prelude::info;
+use std::collections::BTreeMap;
 
 // Wrapper around ProposerElection.
 //
 // Function get_valid_proposer can be expensive, and we want to make sure
 // it is computed only once for a given round.
 pub struct CachedProposerElection {
+    epoch: u64,
     proposer_election: Box<dyn ProposerElection + Send + Sync>,
     // We use BTreeMap since we want a fixed window of cached elements
     // to look back (and caller knows how big of a window it needs).
@@ -25,8 +24,13 @@ pub struct CachedProposerElection {
 }
 
 impl CachedProposerElection {
-    pub fn new(proposer_election: Box<dyn ProposerElection + Send + Sync>, window: usize) -> Self {
+    pub fn new(
+        epoch: u64,
+        proposer_election: Box<dyn ProposerElection + Send + Sync>,
+        window: usize,
+    ) -> Self {
         Self {
+            epoch,
             proposer_election,
             recent_elections: Mutex::new(BTreeMap::new()),
             window,
@@ -42,8 +46,14 @@ impl CachedProposerElection {
 
         *recent_elections.entry(round).or_insert_with(|| {
             let _timer = PROPOSER_ELECTION_DURATION.start_timer();
-            self.proposer_election
-                .get_valid_proposer_and_voting_power_participation_ratio(round)
+            let result = self
+                .proposer_election
+                .get_valid_proposer_and_voting_power_participation_ratio(round);
+            info!(
+                "ProposerElection for epoch {} and round {}: {:?}",
+                self.epoch, round, result
+            );
+            result
         })
     }
 }

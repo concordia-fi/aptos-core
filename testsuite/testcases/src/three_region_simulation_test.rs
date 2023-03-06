@@ -1,12 +1,12 @@
-// Copyright (c) Aptos
+// Copyright © Aptos Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{LoadDestination, NetworkLoadTest};
-use aptos_logger::info;
-use forge::{
+use aptos_forge::{
     GroupNetworkDelay, NetworkContext, NetworkTest, Swarm, SwarmChaos, SwarmExt,
     SwarmNetworkBandwidth, SwarmNetworkDelay, Test,
 };
+use aptos_logger::info;
 use rand::Rng;
 use tokio::runtime::Runtime;
 
@@ -198,7 +198,7 @@ impl NetworkLoadTest for ThreeRegionSimulationTest {
             add_execution_delay(ctx.swarm(), config)?;
         }
 
-        Ok(LoadDestination::AllNodes)
+        Ok(LoadDestination::FullnodesOtherwiseValidators)
     }
 
     fn finish(&self, swarm: &mut dyn Swarm) -> anyhow::Result<()> {

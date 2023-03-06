@@ -1,8 +1,8 @@
-// Copyright (c) Aptos
+// Copyright © Aptos Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 import { AptosAccount } from "./aptos_account";
-import { AptosClient } from "./aptos_client";
+import { AptosClient } from "./providers/aptos_client";
 import { TokenClient } from "./token_client";
 
 import { getFaucetClient, longTestTimeout, NODE_URL } from "./utils/test_helper.test";
@@ -121,7 +121,9 @@ test(
       property_version: "1",
     };
     const mutated_token = await tokenClient.getTokenForAccount(bob.address().hex(), newTokenId);
-    expect(mutated_token.token_properties.map.data.length).toBe(2);
+    // expect property map deserialization works
+    expect(mutated_token.token_properties.data["test"].value).toBe("true");
+    expect(mutated_token.token_properties.data["TOKEN_BURNABLE_BY_OWNER"].value).toBe("true");
 
     // burn the token by owner
     var txn_hash = await tokenClient.burnByOwner(bob, alice.address(), collectionName, tokenName, 1, 1);

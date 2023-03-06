@@ -1,4 +1,4 @@
-// Copyright (c) Aptos
+// Copyright © Aptos Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 import nacl from "tweetnacl";
@@ -176,4 +176,9 @@ export class AptosAccount {
       privateKeyHex: HexString.fromUint8Array(this.signingKey.secretKey.slice(0, 32)).hex(),
     };
   }
+}
+
+// Returns an account address as a HexString given either an AptosAccount or a MaybeHexString.
+export function getAddressFromAccountOrAddress(accountOrAddress: AptosAccount | MaybeHexString): HexString {
+  return accountOrAddress instanceof AptosAccount ? accountOrAddress.address() : HexString.ensure(accountOrAddress);
 }

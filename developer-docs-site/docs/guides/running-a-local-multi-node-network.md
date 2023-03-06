@@ -10,7 +10,7 @@ This guide describes how to run a local network with multiple validator nodes an
 :::tip Use only for test deployments
 The method described in this guide should be used only for test deployments of multi-node local networks. Do not use this guide for deploying in production environments. Currently this is the only guide for multi-node deployments. 
 
-For deploying a local network with a single node, see [Running Local Testnet](/nodes/local-testnet/index.md) and [Local testnet development flow](/guides/local-testnet-dev-flow.md).
+For deploying a local network with a single node, see [Running Local Testnet](../nodes/local-testnet/index.md) and [Local testnet development flow](local-testnet-dev-flow.md).
 :::
 
 ## Before you proceed
@@ -48,7 +48,7 @@ With your development environment ready, now you can proceed below.
 To deploy multiple local validators, run:
 
 ```bash
-cargo run -p forge-cli \
+cargo run -p aptos-forge-cli \
         -- \
         --suite "run_forever" \
         --num-validators 4 test local-swarm
@@ -103,14 +103,14 @@ curl -X POST http://127.0.0.1:8081/mint\?amount\=<amount to mint>\&pub_key\=<pub
 :::tip Faucet and Aptos CLI
 See more on how the faucet works in the [README](https://github.com/aptos-labs/aptos-core/tree/main/crates/aptos-faucet).
 
-Also see how to use the [Aptos CLI](https://aptos.dev/cli-tools/aptos-cli-tool/use-aptos-cli/#account-examples) with an existing faucet.
+Also see how to use the [Aptos CLI](../cli-tools/aptos-cli-tool/use-aptos-cli.md#account-examples) with an existing faucet.
 :::
 
 ## Validator fullnodes
 
 To also run validator fullnodes inside the network, use the `--num-validator-fullnodes` flag. For example:
 ```bash
-cargo run -p forge-cli \
+cargo run -p aptos-forge-cli \
         -- \
         --suite "run_forever" \
         --num-validators 3 \
@@ -121,5 +121,5 @@ cargo run -p forge-cli \
 
 To see all tool usage options, run:
 ```bash
-cargo run -p forge-cli --help
+cargo run -p aptos-forge-cli --help
 ```

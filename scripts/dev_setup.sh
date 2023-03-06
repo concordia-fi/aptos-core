@@ -1,6 +1,8 @@
 #!/bin/bash
-# Copyright (c) Aptos
+# Copyright © Aptos Foundation
+# Parts of the project are originally copyright © Meta Platforms, Inc.
 # SPDX-License-Identifier: Apache-2.0
+
 # This script sets up the environment for the build by installing necessary dependencies.
 #
 # Usage ./dev_setup.sh <options>
@@ -138,7 +140,7 @@ function install_protoc {
   mkdir -p "$TMPFILE"/
   (
     cd "$TMPFILE" || exit
-    curl -LOs "https://github.com/protocolbuffers/protobuf/releases/download/v$PROTOC_VERSION/$PROTOC_PKG.zip"
+    curl -LOs "https://github.com/protocolbuffers/protobuf/releases/download/v$PROTOC_VERSION/$PROTOC_PKG.zip" --retry 3
     sudo unzip -o "$PROTOC_PKG.zip" -d /usr/local bin/protoc
     sudo unzip -o "$PROTOC_PKG.zip" -d /usr/local 'include/*'
     sudo chmod +x "/usr/local/bin/protoc"
@@ -147,13 +149,13 @@ function install_protoc {
 
   # Install the cargo plugins
   if ! command -v protoc-gen-prost &> /dev/null; then
-    cargo install protoc-gen-prost
+    cargo install protoc-gen-prost --locked
   fi
   if ! command -v protoc-gen-prost-serde &> /dev/null; then
-    cargo install protoc-gen-prost-serde
+    cargo install protoc-gen-prost-serde --locked
   fi
   if ! command -v protoc-gen-prost-crate &> /dev/null; then
-    cargo install protoc-gen-prost-crate
+    cargo install protoc-gen-prost-crate --locked
   fi
 }
 
@@ -407,6 +409,18 @@ function install_toolchain {
   fi
 }
 
+function install_rustup_components_and_nightly {
+    echo "Updating rustup and installing rustfmt & clippy"
+    rustup update
+    rustup component add rustfmt
+    rustup component add clippy
+
+    # We require nightly for strict rust formatting
+    echo "Installing the nightly toolchain and rustfmt nightly"
+    rustup toolchain install nightly
+    rustup component add rustfmt --toolchain nightly
+}
+
 function install_cargo_sort {
   if ! command -v cargo-sort &> /dev/null; then
     cargo install cargo-sort --locked
@@ -616,7 +630,7 @@ function install_nodejs {
 }
 
 function install_pnpm {
-    curl -fsSL https://get.pnpm.io/install.sh | "${PRE_COMMAND[@]}" env PNPM_VERSION=7.14.2 bash -
+    curl -fsSL https://get.pnpm.io/install.sh | "${PRE_COMMAND[@]}" env PNPM_VERSION=7.14.2 SHELL="$(which bash)" bash -
 }
 
 function install_python3 {
@@ -883,9 +897,7 @@ if [[ "$INSTALL_BUILD_TOOLS" == "true" ]]; then
 
   install_rustup "$BATCH_MODE"
   install_toolchain "$(cat ./rust-toolchain)"
-  # Add all the components that we need
-  rustup component add rustfmt
-  rustup component add clippy
+  install_rustup_components_and_nightly
 
   install_cargo_sort
   install_cargo_nextest

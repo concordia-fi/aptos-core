@@ -1,14 +1,18 @@
-// Copyright (c) Aptos
+// Copyright © Aptos Foundation
 // SPDX-License-Identifier: Apache-2.0
 
 use anyhow::{format_err, Result};
-use aptos_gas::{AbstractValueSizeGasParameters, NativeGasParameters, LATEST_GAS_FEATURE_VERSION};
+use aptos_gas::{
+    AbstractValueSizeGasParameters, ChangeSetConfigs, NativeGasParameters,
+    LATEST_GAS_FEATURE_VERSION,
+};
 use aptos_resource_viewer::{AnnotatedAccountStateBlob, AptosValueAnnotator};
 use aptos_rest_client::Client;
 use aptos_types::{
     account_address::AccountAddress,
     chain_id::ChainId,
-    transaction::{ChangeSet, Transaction, TransactionOutput, Version},
+    on_chain_config::{Features, OnChainConfig, TimedFeatures},
+    transaction::{ChangeSet, Transaction, TransactionInfo, TransactionOutput, Version},
 };
 use aptos_validator_interface::{
     AptosValidatorInterface, DBDebuggerInterface, DebuggerStateView, RestDebuggerInterface,
@@ -55,10 +59,11 @@ impl AptosDebugger {
         mut begin: Version,
         mut limit: u64,
     ) -> Result<Vec<TransactionOutput>> {
-        let mut txns = self
+        let (mut txns, mut txn_infos) = self
             .debugger
             .get_committed_transactions(begin, limit)
             .await?;
+
         let mut ret = vec![];
         while limit != 0 {
             println!(
@@ -71,9 +76,27 @@ impl AptosDebugger {
             begin += epoch_result.len() as u64;
             limit -= epoch_result.len() as u64;
             txns = txns.split_off(epoch_result.len());
+            let epoch_txn_infos = txn_infos.drain(0..epoch_result.len()).collect::<Vec<_>>();
+            Self::print_mismatches(&epoch_result, &epoch_txn_infos, begin);
+
             ret.append(&mut epoch_result);
         }
         Ok(ret)
+    }
+
+    fn print_mismatches(
+        txn_outputs: &[TransactionOutput],
+        expected_txn_infos: &[TransactionInfo],
+        first_version: Version,
+    ) {
+        for idx in 0..txn_outputs.len() {
+            let txn_output = &txn_outputs[idx];
+            let txn_info = &expected_txn_infos[idx];
+            let version = first_version + idx as Version;
+            txn_output
+                .ensure_match_transaction_info(version, txn_info, None, None)
+                .unwrap_or_else(|err| println!("{}", err))
+        }
     }
 
     pub async fn execute_transactions_by_epoch(
@@ -151,24 +174,28 @@ impl AptosDebugger {
     where
         F: FnOnce(&mut SessionExt<StorageAdapter<DebuggerStateView>>) -> VMResult<()>,
     {
+        let state_view = DebuggerStateView::new(self.debugger.clone(), version);
+        let state_view_storage = StorageAdapter::new(&state_view);
+        let features = Features::fetch_config(&state_view_storage).unwrap_or_default();
         let move_vm = MoveVmExt::new(
             NativeGasParameters::zeros(),
             AbstractValueSizeGasParameters::zeros(),
             LATEST_GAS_FEATURE_VERSION,
-            true,
             ChainId::test().id(),
+            features,
+            TimedFeatures::enable_all(),
         )
         .unwrap();
-        let state_view = DebuggerStateView::new(self.debugger.clone(), version);
-        let state_view_storage = StorageAdapter::new(&state_view);
         let mut session = move_vm.new_session(&state_view_storage, SessionId::Void);
         f(&mut session).map_err(|err| format_err!("Unexpected VM Error: {:?}", err))?;
-        session
-            .finish()
-            .map_err(|err| format_err!("Unexpected VM Error: {:?}", err))?
-            .into_change_set(&mut (), LATEST_GAS_FEATURE_VERSION)
-            .map_err(|err| format_err!("Unexpected VM Error: {:?}", err))
-            .map(|res| res.into_inner().1)
+        let change_set_ext = session
+            .finish(
+                &mut (),
+                &ChangeSetConfigs::unlimited_at_gas_feature_version(LATEST_GAS_FEATURE_VERSION),
+            )
+            .map_err(|err| format_err!("Unexpected VM Error: {:?}", err))?;
+        let (_delta_change_set, change_set) = change_set_ext.into_inner();
+        Ok(change_set)
     }
 }
 

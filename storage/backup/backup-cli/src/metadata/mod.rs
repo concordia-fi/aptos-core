@@ -1,4 +1,5 @@
-// Copyright (c) Aptos
+// Copyright © Aptos Foundation
+// Parts of the project are originally copyright © Meta Platforms, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 pub mod cache;
@@ -67,11 +68,11 @@ impl Metadata {
         match self {
             Self::EpochEndingBackup(e) => {
                 format!("epoch_ending_{}-{}.meta", e.first_epoch, e.last_epoch)
-            }
+            },
             Self::StateSnapshotBackup(s) => format!("state_snapshot_ver_{}.meta", s.version),
             Self::TransactionBackup(t) => {
                 format!("transaction_{}-{}.meta", t.first_version, t.last_version,)
-            }
+            },
             Metadata::Identity(_) => "identity.meta".into(),
         }
         .try_into()

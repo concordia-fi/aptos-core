@@ -69,6 +69,67 @@ module std::features {
         is_enabled(APTOS_STD_CHAIN_ID_NATIVES)
     }
 
+    /// Whether to allow the use of binary format version v6.
+    /// Lifetime: transient
+    const VM_BINARY_FORMAT_V6: u64 = 5;
+
+    public fun get_vm_binary_format_v6(): u64 { VM_BINARY_FORMAT_V6 }
+
+    public fun allow_vm_binary_format_v6(): bool acquires Features {
+        is_enabled(VM_BINARY_FORMAT_V6)
+    }
+
+    /// Whether gas fees are collected and distributed to the block proposers.
+    /// Lifetime: transient
+    const COLLECT_AND_DISTRIBUTE_GAS_FEES: u64 = 6;
+
+    public fun get_collect_and_distribute_gas_fees_feature(): u64 { COLLECT_AND_DISTRIBUTE_GAS_FEES }
+
+    public fun collect_and_distribute_gas_fees(): bool acquires Features {
+        is_enabled(COLLECT_AND_DISTRIBUTE_GAS_FEES)
+    }
+
+    /// Whether the new `aptos_stdlib::multi_ed25519::public_key_validate_internal_v2()` native is enabled.
+    /// This is needed because of the introduction of a new native function.
+    /// Lifetime: transient
+    const MULTI_ED25519_PK_VALIDATE_V2_NATIVES: u64 = 7;
+
+    public fun multi_ed25519_pk_validate_v2_feature(): u64 { MULTI_ED25519_PK_VALIDATE_V2_NATIVES }
+
+    public fun multi_ed25519_pk_validate_v2_enabled(): bool acquires Features {
+        is_enabled(MULTI_ED25519_PK_VALIDATE_V2_NATIVES)
+    }
+
+    /// Whether the new BLAKE2B-256 hash function native is enabled.
+    /// This is needed because of the introduction of new native function(s).
+    /// Lifetime: transient
+    const BLAKE2B_256_NATIVE: u64 = 8;
+
+    public fun get_blake2b_256_feature(): u64 { BLAKE2B_256_NATIVE }
+
+    public fun blake2b_256_enabled(): bool acquires Features {
+        is_enabled(BLAKE2B_256_NATIVE)
+    }
+
+    /// Whether resource groups are enabled.
+    /// This is needed because of new attributes for structs and a change in storage representation.
+    const RESOURCE_GROUPS: u64 = 9;
+
+    public fun get_resource_groups_feature(): u64 { RESOURCE_GROUPS }
+
+    public fun resource_groups_enabled(): bool acquires Features {
+        is_enabled(RESOURCE_GROUPS)
+    }
+
+    /// Whether multisig accounts (different from accounts with multi-ed25519 auth keys) are enabled.
+    const MULTISIG_ACCOUNTS: u64 = 10;
+
+    public fun get_multisig_accounts_feature(): u64 { MULTISIG_ACCOUNTS }
+
+    public fun multisig_accounts_enabled(): bool acquires Features {
+        is_enabled(MULTISIG_ACCOUNTS)
+    }
+
     // ============================================================================================
     // Feature Flag Implementation
 

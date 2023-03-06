@@ -1,4 +1,5 @@
-// Copyright (c) Aptos
+// Copyright © Aptos Foundation
+// Parts of the project are originally copyright © Meta Platforms, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::config::MAX_APPLICATION_MESSAGE_SIZE;
@@ -25,7 +26,6 @@ pub struct MempoolConfig {
     pub shared_mempool_tick_interval_ms: u64,
     pub system_transaction_timeout_secs: u64,
     pub system_transaction_gc_interval_ms: u64,
-    pub shared_mempool_validator_broadcast: bool,
     pub broadcast_buckets: Vec<u64>,
 }
 
@@ -46,7 +46,6 @@ impl Default for MempoolConfig {
             default_failovers: 3,
             system_transaction_timeout_secs: 600,
             system_transaction_gc_interval_ms: 60_000,
-            shared_mempool_validator_broadcast: true,
             broadcast_buckets: DEFAULT_BROADCAST_BUCKETS.to_vec(),
         }
     }
